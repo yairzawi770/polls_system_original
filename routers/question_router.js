@@ -5,12 +5,11 @@ const router = express.Router()
 
 // --- /api/question
 router.get('', async(request, response) => {
-    const result = await question_dal.get_all_question()
+    const result = await question_dal.get_all_questions()
     // 200 = success
     // 201 created 204 no content
     response.status(200).json(result.data)
 })
-
 
 // ============================================== FIX THIS CODE + TEST
 
@@ -31,13 +30,6 @@ router.post('', async (request, response) => {
             response.status(result.internal ? 500: 400).json({ status: "Failed to insert new question", error: result.error })
 })
 
-router.put('/:id', async (request, response) => {
-    const id = request.params.id
-    const updated_question = request.body
-    const result = await question_dal.update_question(id, updated_question)
-
-    response.status(200).json({ result: result.data ? "question updated" : "question not found" })
-})
 
 router.patch('/:id', async (request, response) => {
     const id = request.params.id
@@ -55,12 +47,12 @@ router.delete('/:id', async (request, response) => {
 })
 
 router.delete('/table/question-delete-table', async (request, response) => {
-    const result = await question_dal.delete_table()
+    const result = await question_dal.delete_table1()
     response.status(200).json({ status: "table-deleted" })
 })
 
 router.post('/table/question-create-table', async (request, response) => {
-    const result = await question_dal.create_table()
+    const result = await question_dal.create_table2()
     console.log(result);
     if (result.status == "success")
         
@@ -69,8 +61,8 @@ router.post('/table/question-create-table', async (request, response) => {
         response.status(result.internal? 500 : 400).json({ error: result.error })
 })
 
-router.post('/table/question-create5', async (request, response) => {
-    const result = await question_dal.insert_4question()
+router.post('/table/question-create4', async (request, response) => {
+    const result = await question_dal.insert_4questions()
     response.status(201).json({ result: "4 new question created" })
 })
 

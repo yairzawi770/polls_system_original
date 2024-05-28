@@ -5,6 +5,8 @@ const cors = require('cors')
 const path = require('path')
 const users_router = require('./routers/users_router')
 const question_router = require('./routers/question_router')
+const answers_router = require('./routers/answer_router')
+
 
 const app = express()
 
@@ -16,6 +18,7 @@ app.use(express.static(path.join('.', '/static/')))
 
 app.use('/api/users', users_router)
 app.use('/api/question', question_router)
+app.use('/api/answers', answers_router)
 
 
  const server_api = app.listen(config.server.port, () => {

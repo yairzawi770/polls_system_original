@@ -1,5 +1,5 @@
 const express = require('express')
-const users_dal = require('../dals/users_dal')
+const answers_dal = require('../dals/answers_dal')
 
 const router = express.Router()
 
@@ -9,18 +9,18 @@ router.get('/', async (request, response) => {
         return
     }
     else {
-        response.status(200).redirect('./questions.html')
+        response.status(200).redirect('./answers.html')
         return
     }
 })
 
 router.post('/signup_post', async (request, response) => {
-    const { fname, lname, address, birthday, email, password, } = request.body
+    const { email, password } = request.body
     console.log(request.body);
-    const result = await users_dal.insert_user({ email, password, fname, lname, address, birthday })
+    const result = await answers_dal.insert_answer({ email, password })
     if (result.status === "success") {
         response.cookie('auth', `${email}_${result.data.id}`)
-        response.status(200).redirect('./questions.html')
+        response.status(200).redirect('./answers.html')
     }
     else {
         console.log(result.error);
@@ -31,10 +31,10 @@ router.post('/signup_post', async (request, response) => {
 router.post('/login_post', async (request, response) => {
     const { email, password } = request.body
     console.log(request.body);
-    const result = await users_dal.try_login(email, password)
+    const result = await answers_dal.try_login(email, password)
     if (result.status === "success") {
         response.cookie('auth', `${email}_${result.id}`)
-        response.status(200).redirect('./questions.html')
+        response.status(200).redirect('./answers.html')
     }
     else {
         response.status(200).redirect(`./error_login.html?error=${result.status}`)
