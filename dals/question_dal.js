@@ -37,7 +37,7 @@ async function create_table2() {
 
 async function insert_4questions() {
     `INSERT INTO questions (question_title, first_answer, second_answer, third_answer,fourth_answer) 
-    VALUES ('Where is your preferred place to travel(??)', 'Thailand ', 'Brazil','Israel', 'Spain');
+    VALUES ('Where is your preferred place to travel ', 'Thailand ', 'Brazil','Israel', 'Spain');
     INSERT INTO questions (question_title, first_answer, second_answer, third_answer,fourth_answer) 
     VALUES ('What is your favorite means of transport to travel ', 'Bus', 'Yacht','Airplane', 'Car');
     INSERT INTO questions (question_title, first_answer, second_answer, third_answer,fourth_answer)
@@ -180,5 +180,5 @@ async function delete_table1() {
 module.exports = {
     get_all_questions, get_question_by_id, insert_question,
     delete_question, delete_table1,
-    create_table2, insert_4questions, patch_question,data_base
+    create_table2, insert_4questions, patch_question, data_base
 }

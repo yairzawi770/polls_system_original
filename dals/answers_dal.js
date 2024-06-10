@@ -1,6 +1,6 @@
 const knex = require("knex")
 const config = require("config")
-
+const logger = require('../logger/my_logger')
 const data_base = knex({
     client: 'pg',
     connection: {
@@ -15,12 +15,12 @@ async function create_table2() {
     try {
         const result = await data_base.raw(`CREATE TABLE answers (
         id SERIAL PRIMARY KEY,
-        answer_title VARCHAR(255) NOT NULL,
-        first_answer VARCHAR(255),
-        second_answer VARCHAR(255),
-        third_answer VARCHAR(255),
-        fourth_answer VARCHAR(255),
-        UNIQUE(answer_title) );`)
+        question_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        selected_answer INTEGER NOT NULL CHECK (selected_answer BETWEEN 1 AND 4),
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (question_id) REFERENCES questions (id),
+        UNIQUE (user_id, question_id) );`)
         return {
             status: "success"
         }
@@ -36,14 +36,14 @@ async function create_table2() {
 }
 
 async function insert_4answers() {
-    `INSERT INTO answers (answer_title, first_answer, second_answer, third_answer,fourth_answer) 
-    VALUES ('Where is your preferred place to travel(??)', 'Thailand ', 'Brazil','Israel', 'Spain');
-    INSERT INTO answers (answer_title, first_answer, second_answer, third_answer,fourth_answer) 
-    VALUES ('What is your favorite means of transport to travel ', 'Bus', 'Yacht','Airplane', 'Car');
-    INSERT INTO answers (answer_title, first_answer, second_answer, third_answer,fourth_answer)
-     VALUES ('What is the season of the year in which you prefer to travel ', 'Spring', 'Summer','Fall', 'Winter');
-    INSERT INTO answers (answer_title, first_answer, second_answer, third_answer,fourth_answer) 
-    VALUES ('Where do you prefer to stay ', 'Hotels', 'hostels','cabins', 'apartment rentals');`
+    `INSERT INTO answers (question_id, user_id, selected_answer) 
+    VALUES (1,1,1);
+    INSERT INTO answers (question_id, user_id, selected_answer) 
+    VALUES (2,2,2);
+    INSERT INTO answers (question_id, user_id, selected_answer)
+     VALUES (3,3,3);
+    INSERT INTO answers (question_id, user_id, selected_answer) 
+    VALUES (4,4,4);`
         .replaceAll('\n    ', '')
         .split(';')
         .filter(query => query)
@@ -180,5 +180,5 @@ async function delete_table1() {
 module.exports = {
     get_all_answers, get_answer_by_id, insert_answer,
     delete_answer, delete_table1,
-    create_table2, insert_4answers, patch_answer,data_base
+    create_table2, insert_4answers, patch_answer, data_base
 }

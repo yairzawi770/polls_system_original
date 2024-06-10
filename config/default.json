@@ -7,5 +7,9 @@
         "user": "postgres",
         "password": "admin",
         "database": "postgres"
+    },
+    "logger": {
+        "level": "debug",
+        "file_path": "./logs/log1.log"
     }
 }

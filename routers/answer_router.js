@@ -1,44 +1,72 @@
 const express = require('express')
-const answers_dal = require('../dals/answers_dal')
-
+const answer_dal = require('../dals/answers_dal')
+const my_logger = require('../logger/my_logger')
 const router = express.Router()
 
-router.get('/', async (request, response) => {
-    if (!request.cookies.auth) {
-        response.status(200).redirect('./login.html')
-        return
-    }
-    else {
-        response.status(200).redirect('./answers.html')
-        return
-    }
+// --- /api/answer
+router.get('', async(request, response) => {
+    const result = await answer_dal.get_all_answers()
+    // 200 = success
+    // 201 created 204 no content
+    response.status(200).json(result.data)
 })
 
-router.post('/signup_post', async (request, response) => {
-    const { email, password } = request.body
-    console.log(request.body);
-    const result = await answers_dal.insert_answer({ email, password })
-    if (result.status === "success") {
-        response.cookie('auth', `${email}_${result.data.id}`)
-        response.status(200).redirect('./answers.html')
-    }
-    else {
-        console.log(result.error);
-        response.status(200).redirect('./error_signup.html')
-    }
+// ============================================== FIX THIS CODE + TEST
+
+// prefix: /api/answer/:id
+// example: /api/answer/3
+router.get('/:id', async (request, response) => {
+    const id = request.params.id
+    const result = await answer_dal.get_answer_by_id(id)
+    response.status(200).json(result.data ? result.data : {})
 })
 
-router.post('/login_post', async (request, response) => {
-    const { email, password } = request.body
-    console.log(request.body);
-    const result = await answers_dal.try_login(email, password)
-    if (result.status === "success") {
-        response.cookie('auth', `${email}_${result.id}`)
-        response.status(200).redirect('./answers.html')
-    }
-    else {
-        response.status(200).redirect(`./error_login.html?error=${result.status}`)
-    }
+router.post('', async (request, response) => {
+        const new_answer = request.body
+        console.log(request.cookies);
+        const id = request.cookies.auth.split('_')[1] 
+        new_answer.user_id = id
+        console.log(new_answer);
+        const result = await answer_dal.insert_answer(new_answer)
+       if (result.status == "success") 
+            response.status(201).json({ new_answer: result.data, url: `/api/answers/${result.data.id}` })
+        else
+            response.status(result.internal ? 500: 400).json({ status: "Failed to insert new answer", error: result.error })
+})
+
+router.patch('/:id', async (request, response) => {
+    const id = request.params.id
+    const updated_answer = request.body    
+    const result = await answer_dal.patch_answer(id, updated_answer)
+
+    response.status(200).json({ result: result.data ? "answer updated" : "answer not found" })
+})
+
+router.delete('/:id', async (request, response) => {
+    const id = request.params.id
+    const result = await answer_dal.delete_answer(id)
+    console.log(result);
+    response.status(200).json({ result: result.data ? "answer deleted" : "answer not found" })
+})
+
+router.delete('/table/answer-delete-table', async (request, response) => {
+    const result = await answer_dal.delete_table1()
+    response.status(200).json({ status: "table-deleted" })
+})
+
+router.post('/table/answer-create-table', async (request, response) => {
+    const result = await answer_dal.create_table2()
+    console.log(result);
+    if (result.status == "success")
+        
+        response.status(201).json({ status: "table-created" })
+    else
+        response.status(result.internal? 500 : 400).json({ error: result.error })
+})
+
+router.post('/table/answer-create4', async (request, response) => {
+    const result = await answer_dal.insert_4answers()
+    response.status(201).json({ result: "4 new answer created" })
 })
 
 module.exports = router
