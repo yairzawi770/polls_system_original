@@ -29,7 +29,7 @@ async function create_table2() {
         const case_number = Math.floor(Math.random() * 1000000) + 1000000
         logger.error(`case number : (${case_number}) error in creating questions table (${e.message})`);
         return {
-            staus: 'failed to get students',
+            staus: 'failed to get question',
             error: e.message
         }
     }

@@ -28,6 +28,9 @@
     "mocha": "^10.4.0",
     "pg": "^8.11.3",
     "winston": "^3.13.0",
-    "cookie-parser": "^1.4.5"
+    "cookie-parser": "^1.4.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "should": "^13.2.3"
   }
 }

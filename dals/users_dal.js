@@ -16,12 +16,12 @@ async function create_table() {
     try {
         const result = await data_base.raw(`CREATE TABLE users (
         id SERIAL PRIMARY KEY,
-        First_Name VARCHAR(255) NOT NULL,
-        Last_Name VARCHAR(255),
-        Email VARCHAR(255) NOT NULL,
+        First_Name VARCHAR(50) NOT NULL,
+        Last_Name VARCHAR(50),
+        Email VARCHAR(50) NOT NULL,
         Date_Of_Birth DATE NOT NULL,
-        Address VARCHAR(255),
-        password VARCHAR(255) NOT NULL,
+        Address VARCHAR(50),
+        password VARCHAR(50) NOT NULL,
                 CHECK (char_length(password) >= 6),
         UNIQUE(email) );`)
         console.log('create finished successfully');
