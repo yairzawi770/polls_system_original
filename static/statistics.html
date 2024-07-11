@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Preferences</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        input[type="number"] {
+            width: 20%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="main_user">Answers for selected user</h1>
+        <table id="answersTable">
+            <tr>
+                <th>Question Title</th>
+                <th>Answer</th>
+            </tr>
+        </table>
+    </div>
+
+    <h2>select user</h2>
+    <div style="text-align: center;">
+        <input type="number" id="numberInput" placeholder="user id">
+        <button onclick="print()">Show Statistics</button>
+    </div>
+
+    <script>
+        function getStatistics() {
+            const number = document.getElementById('numberInput').value;
+            alert(`The number is: ${number}`);
+        }
+
+        function print() {
+            const user_id = document.getElementById('numberInput').value
+            fetch(`http://localhost:9091/api/users/${user_id}`)  // Replace with your API endpoint
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data[0].first_name + ' ' + data[0].last_name);
+                    const user_name = document.getElementById('main_user').textContent = 'Answers for ' + data[0].first_name + ' ' + data[0].last_name
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+
+
+            fetch(`http://localhost:9091/api/answers/statistics/3-users-answers/${user_id}`)  // Replace with your API endpoint
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const table = document.getElementById('answersTable');
+                    const rowCount = table.rows.length;
+                    for (let i = rowCount - 1; i > 0; i--) {
+                        table.deleteRow(i);
+                    }
+                    data.data.answers.forEach(answer => {
+                        const row = table.insertRow();
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        cell1.textContent = answer.question_title.trim();
+                        cell2.textContent = answer.selected_answer;
+                    });
+                    //     console.log(data[0].first_name + ' ' + data[0].last_name);
+                    //     const user_name = document.getElementById('main_user').textContent += data[0].first_name + ' ' + data[0].last_name
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        }
+        // const data = {
+        //     "status": "success",
+        //     "data": {
+        //         "answers": [
+        //             {
+        //                 "question_id": 1,
+        //                 "selected_answer": 1,
+        //                 "user_id": 1,
+        //                 "first_name": "Arya",
+        //                 "last_name": "Stark",
+        //                 "question_title": "Where is your preferred place to travel "
+        //             },
+        //             {
+        //                 "question_id": 2,
+        //                 "selected_answer": 1,
+        //                 "user_id": 1,
+        //                 "first_name": "Arya",
+        //                 "last_name": "Stark",
+        //                 "question_title": "What is your favorite means of transport to travel "
+        //             },
+        //             {
+        //                 "question_id": 3,
+        //                 "selected_answer": 1,
+        //                 "user_id": 1,
+        //                 "first_name": "Arya",
+        //                 "last_name": "Stark",
+        //                 "question_title": "What is the season of the year in which you prefer to travel "
+        //             },
+        //             {
+        //                 "question_id": 4,
+        //                 "selected_answer": 1,
+        //                 "user_id": 1,
+        //                 "first_name": "Arya",
+        //                 "last_name": "Stark",
+        //                 "question_title": "Where do you prefer to stay "
+        //             }
+        //         ]
+        //     }
+        // };
+
+
+    </script>
+</body>
+
+</html>

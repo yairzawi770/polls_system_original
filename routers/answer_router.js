@@ -1,5 +1,6 @@
 const express = require('express')
 const answer_dal = require('../dals/answers_dal')
+const statistics_dal = require('../dals/statistics_dal')
 const my_logger = require('../logger/my_logger')
 const router = express.Router()
 
@@ -67,6 +68,24 @@ router.post('/table/answer-create-table', async (request, response) => {
 router.post('/table/answer-create4', async (request, response) => {
     const result = await answer_dal.insert_4answers()
     response.status(201).json({ result: "4 new answer created" })
+})
+
+router.get('/statistics/1-answers-per-question/:id' , async (request, response) => {
+    const id = request.params.id
+    const result = await statistics_dal.statistics1(id)
+    response.status(200).json(result)
+})
+
+router.get('/statistics/2-total-answers-per-question/:id' , async (request, response) => {
+    const id = request.params.id
+    const result = await statistics_dal.statistics2(id)
+    response.status(200).json(result)
+})
+
+router.get('/statistics/3-users-answers/:id' , async (request, response) => {
+    const id = request.params.id
+    const result = await statistics_dal.statistics3(id)
+    response.status(200).json(result)
 })
 
 module.exports = router
